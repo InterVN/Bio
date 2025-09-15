@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InterVN</title>
+  <meta name="description" content="Link bio đẹp, responsive, animation, dark mode, chia sẻ và sao chép nhanh" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#9aa4b2;
+      --accent1: linear-gradient(135deg,#7c3aed 0%,#06b6d4 100%);
+      --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.03);
+      --radius:16px;
+      --accent: #7c3aed;
+      --text: #e6eef8;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:'Inter',system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent 8%),
+                  radial-gradient(800px 400px at 90% 90%, rgba(6,182,212,0.08), transparent 6%),
+                  var(--bg);
+      color:var(--text); display:flex; align-items:center; justify-content:center; padding:40px;
+    }
+    .container{width:100%; max-width:420px;}
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius); padding:28px; box-shadow:0 10px 30px rgba(2,6,23,0.6);
+      backdrop-filter: blur(8px); border:1px solid rgba(255,255,255,0.03);
+      position:relative; overflow:hidden;
+    }
+
+    .blob{position:absolute; filter:blur(36px); opacity:0.85; mix-blend-mode:screen}
+    .blob.a{width:220px;height:220px;background:linear-gradient(135deg,#7c3aed,#06b6d4); border-radius:50%; top:-40px; left:-60px}
+    .blob.b{width:140px;height:140px;background:linear-gradient(135deg,#06b6d4,#7c3aed); border-radius:50%; bottom:-30px; right:-40px}
+
+    header{display:flex; gap:16px; align-items:center}
+    .avatar{
+      width:86px;height:86px;border-radius:50%; overflow:hidden; flex:0 0 86px; border:2px solid rgba(255,255,255,0.06);
+      box-shadow:0 6px 18px rgba(7,12,20,0.6); background:linear-gradient(90deg,#111827,#0b1220);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
+
+    .meta{flex:1}
+    .name{font-weight:700;font-size:18px;line-height:1}
+    .title{color:var(--muted); font-size:13px; margin-top:6px}
+
+    .links{margin-top:20px; display:grid; gap:12px}
+    .link{
+      display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--glass);
+      border:1px solid var(--glass-2); text-decoration:none;color:var(--text); transition:transform .18s ease, box-shadow .2s ease;
+      transform:translateY(0); box-shadow:0 6px 16px rgba(2,6,23,0.45)
+    }
+    .link:hover{transform:translateY(-6px); box-shadow:0 18px 40px rgba(2,6,23,0.6)}
+    .link .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    .link .label{font-weight:600}
+    .link .desc{font-size:12px;color:var(--muted)}
+
+    .ctas{display:flex;gap:10px;margin-top:18px}
+    .btn{padding:10px 14px;border-radius:999px;font-weight:600;border:0;cursor:pointer;background:transparent;color:var(--text);display:inline-flex;align-items:center;gap:8px}
+    .btn.ghost{border:1px solid rgba(255,255,255,0.04)}
+    .btn.primary{background:var(--accent);background-image:var(--accent1);box-shadow:0 8px 20px rgba(124,58,237,0.12)}
+
+    .row{display:flex;align-items:center;gap:10px}
+    .muted{color:var(--muted);font-size:13px}
+
+    .toggle{margin-left:auto}
+
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+
+    .ripple{position:absolute; border-radius:50%; transform:scale(0); opacity:.9; animation:ripple .9s ease-out; pointer-events:none}
+    @keyframes ripple{to{transform:scale(12);opacity:0}}
+
+    @media (max-width:420px){body{padding:18px} .container{max-width:100%}}
+
+    .card{animation:pop .6s cubic-bezier(.2,.9,.3,1)}
+    @keyframes pop{from{transform:translateY(12px) scale(.995);opacity:0} to{transform:none;opacity:1}}
+
+    .badge{background:rgba(255,255,255,0.06);padding:6px 8px;border-radius:999px;font-weight:700;font-size:13px}
+
+    .count{font-size:12px;color:var(--muted);margin-left:auto}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card" id="card">
+
+      <div class="blob a" aria-hidden></div>
+      <div class="blob b" aria-hidden></div>
+
+      <header>
+        <div class="avatar" id="avatar">
+          <img src="https://avatars.githubusercontent.com/u/223264668?v=4&size=64" alt="avatar">
+        </div>
+        <div class="meta">
+          <div class="name" id="displayName">Tên của bạn</div>
+          <div class="title" id="subtitle">Creator • Game • Dev</div>
+        </div>
+        <div class="row toggle">
+          <button class="btn ghost" id="shareBtn" title="Chia sẻ">🔗 Share</button>
+          <button class="btn ghost" id="copyBtn" title="Sao chép liên kết">📋 Copy</button>
+        </div>
+      </header>
+
+      <div class="links" id="linksList"></div>
+
+      <div class="ctas">
+        <button class="btn primary" id="contactBtn">✉️ Liên hệ</button>
+        <button class="btn ghost" id="downloadVcard">💾 Tải vCard</button>
+        <button class="btn ghost" id="themeToggle" title="Chuyển giao diện">🌙</button>
+      </div>
+
+      <footer>
+        <div class="muted">@InterVN</div>
+      </footer>
+    </div>
+  </div>
+
+  <template id="linkTemplate">
+    <a class="link" href="#" target="_blank">
+      <div class="icon">🔗</div>
+      <div>
+        <div class="label">Label</div>
+        <div class="desc">Mô tả ngắn</div>
+      </div>
+      <div class="count">0</div>
+    </a>
+  </template>
+
+  <script>
+    const DATA = {
+      name: 'InterVN',
+      subtitle: 'Creator • Dev • Gamer',
+      avatar: document.getElementById('avatar').querySelector('img').src,
+      links:[
+        {label:'RunCODE (Java)', url:'RunCode=Java_ProVersion19094183410481341383511035811351958bdfhesfu3141hui3414813418h4184319h139h13841h48h1394h1834h31984h1384h1384h138491918e01we0we1e12h918eh19e812eh18eh12e98h1w8eh192eh.html', desc:'Chạy Code Java (Moded) - Version 1.609.80', icon:'🤖'},
+        {label:'', url:'https://.com', desc:' ', icon:''},
+        {label:'', url:'https://.com', desc:'', icon:''},
+        {label:'', url:'https://.com/shop', desc:'', icon:''}
+      ]
+    }
+
+    document.getElementById('displayName').textContent = DATA.name
+    document.getElementById('subtitle').textContent = DATA.subtitle
+
+    const linksList = document.getElementById('linksList')
+    const template = document.getElementById('linkTemplate')
+
+    const COUNTERS_KEY = 'linkbio_counters_v1'
+    let counters = JSON.parse(localStorage.getItem(COUNTERS_KEY) || '{}')
+
+    function renderLinks(){
+      linksList.innerHTML = ''
+      DATA.links.forEach((l, idx) => {
+        const el = template.content.cloneNode(true)
+        const a = el.querySelector('a')
+        a.href = l.url
+        a.target = '_blank'
+        a.querySelector('.icon').textContent = l.icon || '🔗'
+        a.querySelector('.label').textContent = l.label
+        a.querySelector('.desc').textContent = l.desc
+        const countEl = a.querySelector('.count')
+        countEl.textContent = counters[l.url] || 0
+
+        a.addEventListener('click', e=>{
+          counters[l.url] = (counters[l.url]||0) + 1
+          localStorage.setItem(COUNTERS_KEY, JSON.stringify(counters))
+          countEl.textContent = counters[l.url]
+        })
+
+        linksList.appendChild(el)
+      })
+    }
+    renderLinks()
+
+    const shareBtn = document.getElementById('shareBtn')
+    shareBtn.addEventListener('click', async ()=>{
+      const shareData = {title: DATA.name, text: 'Xem trang liên kết của tôi', url: location.href}
+      if(navigator.share){
+        try{ await navigator.share(shareData) }catch(e){ copyCurrentUrl() }
+      }else{ copyCurrentUrl() }
+    })
+
+    const copyBtn = document.getElementById('copyBtn')
+    copyBtn.addEventListener('click', ()=>{ copyCurrentUrl(true) })
+
+    function copyCurrentUrl(showToast=false){
+      navigator.clipboard?.writeText(location.href).then(()=>{
+        pulse(copyBtn)
+        if(showToast) toast('Đã sao chép liên kết!')
+      }).catch(()=>{ toast('Không thể sao chép tự động — hãy copy thủ công') })
+    }
+
+    function toast(msg){
+      const t = document.createElement('div')
+      t.textContent = msg
+      Object.assign(t.style,{position:'fixed',left:'50%',transform:'translateX(-50%)',bottom:'36px',padding:'10px 14px',background:'#0b1220',border:'1px solid rgba(255,255,255,0.04)',borderRadius:'10px'})
+      document.body.appendChild(t)
+      setTimeout(()=>t.style.opacity='0',1800)
+      setTimeout(()=>t.remove(),2400)
+    }
+
+    function pulse(el){
+      const r = document.createElement('span')
+      r.className = 'ripple'
+      const rect = el.getBoundingClientRect()
+      r.style.width = r.style.height = Math.max(rect.width,rect.height)+'px'
+      r.style.left = (rect.left + rect.width/2 - rect.width/2) + 'px'
+      r.style.top = (rect.top + rect.height/2 - rect.width/2) + 'px'
+      document.body.appendChild(r)
+      setTimeout(()=>r.remove(),900)
+      for(let i=0;i<12;i++){ spawnParticle(rect.left+rect.width/2, rect.top+rect.height/2) }
+    }
+
+    function spawnParticle(x,y){
+      const p = document.createElement('div')
+      p.textContent = '•'
+      Object.assign(p.style,{position:'fixed',left:x+'px',top:y+'px',fontSize:'18px',opacity:1,transform:'translate(-50%,-50%)'});
+      document.body.appendChild(p)
+      const dx = (Math.random()-0.5)*160; const dy = -Math.random()*220;
+      p.animate([{transform:`translate(${dx}px,${dy}px) scale(${Math.random()+0.4})`, opacity:0}],{duration:800+Math.random()*400,easing:'cubic-bezier(.2,.8,.2,1)'});
+      setTimeout(()=>p.remove(),1200)
+    }
+
+    document.getElementById('contactBtn').addEventListener('click', ()=>{
+      const msg = prompt('Gửi tin nhắn đến ' + DATA.name + '\n(Ví dụ: Xin chào, tôi muốn hợp tác)')
+      if(msg) toast('Cảm ơn! Tin nhắn đã được gửi (mô phỏng)')
+    })
+
+    document.getElementById('downloadVcard').addEventListener('click', ()=>{
+      const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${DATA.name}\nTITLE:${DATA.subtitle}\nURL:${location.href}\nEND:VCARD`;
+      const blob = new Blob([vcard], {type:'text/vcard'})
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a'); a.href = url; a.download = DATA.name.replace(/\s+/g,'_') + '.vcf'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url)
+      pulse(document.getElementById('downloadVcard'))
+    })
+
+    const themeToggle = document.getElementById('themeToggle')
+    themeToggle.addEventListener('click', ()=>{
+      document.documentElement.classList.toggle('light')
+      if(document.documentElement.classList.contains('light')) applyLightTheme(); else applyDarkTheme()
+    })
+    function applyLightTheme(){
+      document.documentElement.style.setProperty('--bg','#f5f7fb'); document.documentElement.style.setProperty('--text','#0b1220'); document.documentElement.style.setProperty('--card','#ffffff'); document.documentElement.style.setProperty('--glass','rgba(2,6,23,0.03)');
+    }
+    function applyDarkTheme(){
+      document.documentElement.style.removeProperty('--bg'); document.documentElement.style.removeProperty('--text'); document.documentElement.style.removeProperty('--card'); document.documentElement.style.removeProperty('--glass');
+    }
+
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'k' && (e.ctrlKey||e.metaKey)){
+        e.preventDefault(); document.querySelector('.link')?.focus()
+      }
+    })
+
+    (function animateBlobs(){
+      const a = document.querySelector('.blob.a'), b = document.querySelector('.blob.b')
+      let t=0
+      function frame(){ t+=0.006; a.style.transform = `translateY(${Math.sin(t)*6}px) translateX(${Math.cos(t)*6}px) rotate(${t*18}deg)`; b.style.transform = `translateY(${Math.cos(t)*5}px) translateX(${Math.sin(t)*5}px) rotate(${-t*12}deg)`; requestAnimationFrame(frame)}
+      requestAnimationFrame(frame)
+    })()
+
+    window.LINKBIO = {
+      setData(newData){ Object.assign(DATA,newData); renderLinks(); document.getElementById('displayName').textContent = DATA.name; document.getElementById('subtitle').textContent = DATA.subtitle }
+    }
+
+    linksList.addEventListener('keydown', e=>{
+      if(e.key==='Enter' && e.target.closest('.link')) e.target.closest('.link').click()
+    })
+
+  </script>
+</body>
+</html>
